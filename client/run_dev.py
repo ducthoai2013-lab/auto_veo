@@ -1,0 +1,10 @@
+"""Chạy app từ mã nguồn:  .venv\\Scripts\\python client\\run_dev.py"""
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from autoveo.main import main  # noqa: E402
+
+if __name__ == "__main__":
+    sys.exit(main())

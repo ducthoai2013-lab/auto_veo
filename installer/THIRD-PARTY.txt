@@ -1,0 +1,9 @@
+THANH PHAN BEN THU BA DONG GOI KEM AUTO_VEO3
+============================================
+- Python (PSF License) - moi truong chay nhung san.
+- Qt 6 / PySide6 (LGPLv3) - giao dien. Duoc nap dong (DLL), nguoi dung co the thay the.
+- httpx, certifi, Pillow (BSD / MPL-2.0 / HPND) - mang va xu ly anh.
+- FFmpeg (ffmpeg.exe) - noi/cat video. Ban dong goi la ban "essentials" cua gyan.dev, giay phep GPLv3.
+  Ma nguon va giay phep: https://www.ffmpeg.org/ va https://www.gyan.dev/ffmpeg/builds/
+  CANH BAO PHAT HANH: neu phat hanh rong cho khach hang, hay doi sang ban FFmpeg LGPL (khong co x264/GPL)
+  hoac kem day du thong bao giay phep GPLv3 va lien ket ma nguon.

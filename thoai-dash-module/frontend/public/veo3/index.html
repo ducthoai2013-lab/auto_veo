@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Auto_veo3 – Tải về</title>
+<link rel="icon" href="/favicon.ico">
+<style>
+  :root { --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb; --brand:#6c63f5; --bg:#f5f6f8; }
+  * { box-sizing: border-box; }
+  body { margin:0; font:16px/1.55 "Segoe UI",system-ui,sans-serif; color:var(--ink); background:var(--bg); }
+  main { max-width:760px; margin:0 auto; padding:40px 20px 60px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:14px; padding:28px; margin-bottom:20px; }
+  h1 { margin:0 0 6px; font-size:32px; } h2 { margin:0 0 12px; font-size:19px; }
+  .sub { color:var(--muted); margin:0 0 22px; }
+  .btn { display:inline-block; background:var(--brand); color:#fff; text-decoration:none; font-weight:700; padding:14px 26px; border-radius:8px; }
+  .btn[aria-disabled=true] { background:#b9b6f0; pointer-events:none; }
+  .meta { color:var(--muted); font-size:14px; margin-top:12px; word-break:break-all; }
+  ol { padding-left:20px; margin:0; } li { margin:8px 0; }
+  code { background:#f3f4f6; padding:1px 6px; border-radius:4px; }
+  .note { background:#fff8e1; border:1px solid #fde68a; border-radius:8px; padding:12px 14px; font-size:14px; }
+  a { color:#2563eb; }
+</style>
+</head>
+<body>
+<main>
+  <div class="card">
+    <h1>Auto_veo3</h1>
+    <p class="sub">Tạo video hàng loạt từ prompt và ảnh: Text to Video, Image to Video, Start–End, đồng bộ nhân vật.</p>
+    <a id="dl" class="btn" href="#" aria-disabled="true">Tải Auto_veo3 cho Windows</a>
+    <div id="meta" class="meta">Đang lấy thông tin phiên bản…</div>
+  </div>
+  <div class="card">
+    <h2>Cài đặt trong 3 bước</h2>
+    <ol>
+      <li>Tải file <code>.zip</code>, <b>giải nén</b> vào bất kỳ thư mục nào (không cần quyền quản trị, không cần cài Python hay ffmpeg).</li>
+      <li>Mở <code>Auto_veo3.exe</code>, bấm <b>Đăng nhập bằng Google</b>, trình duyệt sẽ mở để bạn bấm <b>Cho phép thiết bị này</b>.</li>
+      <li>Dán prompt, bấm <b>BẮT ĐẦU TẠO VIDEO</b>. Tài khoản mới có gói dùng thử; cần thêm thì bấm <b>MUA GÓI CƯỚC</b> và quét mã QR.</li>
+    </ol>
+  </div>
+  <div class="card">
+    <h2>Yêu cầu và lưu ý</h2>
+    <ul>
+      <li>Windows 10 hoặc 11 (64-bit), có kết nối Internet.</li>
+      <li>Nếu Windows hiện cảnh báo "Windows đã bảo vệ PC của bạn": bấm <b>Thông tin thêm</b> → <b>Vẫn chạy</b>.</li>
+      <li>Mỗi gói cho số máy nhất định. Đổi máy: vào <a href="/veo3/devices.html">quản lý thiết bị</a> để gỡ máy cũ.</li>
+      <li>Nên dùng prompt tiếng Anh. Video có watermark "Veo" của Google.</li>
+    </ul>
+    <div class="note">Cần hỗ trợ? Trong app bấm nút <b>Hỗ trợ</b> để sao chép thông tin chẩn đoán gửi cho quản trị.</div>
+  </div>
+</main>
+<script>
+fetch('/veo3/latest.json?ts=' + Date.now()).then(function (r) { return r.json(); }).then(function (d) {
+  var a = document.getElementById('dl'), m = document.getElementById('meta');
+  a.href = d.url; a.removeAttribute('aria-disabled');
+  var parts = ['Phiên bản ' + d.version];
+  if (d.size_mb) parts.push(d.size_mb + ' MB');
+  m.textContent = parts.join(' · ') + (d.sha256 ? ' · SHA256: ' + d.sha256 : '');
+}).catch(function () { document.getElementById('meta').textContent = 'Không lấy được thông tin phiên bản, hãy thử lại sau.'; });
+</script>
+</body>
+</html>

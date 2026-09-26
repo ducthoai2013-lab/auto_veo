@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cho phép thiết bị – Auto_veo3</title>
+<style>
+  body { margin:0; font:16px/1.55 "Segoe UI",system-ui,sans-serif; color:#1f2937; background:#f5f6f8; }
+  main { max-width:520px; margin:8vh auto; padding:0 20px; }
+  .card { background:#fff; border:1px solid #e5e7eb; border-radius:14px; padding:28px; }
+  h1 { margin:0 0 14px; font-size:24px; }
+  .code { font:700 28px/1.2 Consolas,monospace; letter-spacing:4px; margin:8px 0 16px; }
+  button, .btn { border:0; border-radius:8px; padding:12px 22px; font:700 15px "Segoe UI",sans-serif; cursor:pointer; text-decoration:none; display:inline-block; }
+  .ok { background:#6c63f5; color:#fff; } .no { background:#eef0f3; color:#374151; margin-left:8px; }
+  .msg { margin-top:16px; } .err { color:#b91c1c; } .good { color:#15803d; font-weight:600; }
+</style>
+</head>
+<body>
+<main><div class="card">
+  <h1>Cho phép thiết bị đăng nhập Auto_veo3</h1>
+  <div id="body">Đang kiểm tra…</div>
+</div></main>
+<script>
+var KEY = 'd100radar_token';
+var body = document.getElementById('body');
+var code = (new URLSearchParams(location.search).get('code') || '').trim().toUpperCase();
+var token = localStorage.getItem(KEY);
+var h = { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' };
+function el(t, props, text) { var e = Object.assign(document.createElement(t), props || {}); if (text) e.textContent = text; return e; }
+function say(text, cls) { body.append(el('div', { className: 'msg ' + (cls || '') }, text)); }
+
+async function api(path, opt) {
+  var r = await fetch('/api/veo' + path, opt);
+  var j = {}; try { j = await r.json(); } catch (e) {}
+  if (!r.ok) { var d = j.detail; throw new Error(d && typeof d === 'object' ? d.message : (d || ('Lỗi ' + r.status))); }
+  return j;
+}
+
+(async function () {
+  body.textContent = '';
+  if (!code) { say('Thiếu mã thiết bị. Hãy mở lại từ ứng dụng Auto_veo3.', 'err'); return; }
+  if (!token) {
+    body.append(el('p', {}, 'Bạn cần đăng nhập D100Radar bằng Google trước.'));
+    body.append(el('a', { className: 'btn ok', href: '/login' }, 'Đăng nhập'));
+    body.append(el('p', { className: 'msg' }, 'Sau khi đăng nhập xong, quay lại ứng dụng Auto_veo3 và bấm "Mở lại trang đăng nhập".'));
+    return;
+  }
+  try {
+    var info = await api('/device/info?user_code=' + encodeURIComponent(code), { headers: h });
+    if (info.status !== 'pending') { say('Mã này đã được xử lý. Hãy quay lại ứng dụng.', 'err'); return; }
+    body.append(el('div', {}, 'Máy đang xin đăng nhập: '));
+    body.append(el('b', {}, info.device_name || '(không rõ tên)'));
+    body.append(el('div', { className: 'code' }, info.user_code));
+    body.append(el('div', {}, 'Chỉ bấm "Cho phép" nếu mã trên khớp với mã đang hiện trong ứng dụng.'));
+    var row = el('div', { className: 'msg' });
+    var ok = el('button', { className: 'ok' }, 'Cho phép thiết bị này');
+    var no = el('button', { className: 'no' }, 'Từ chối');
+    row.append(ok, no); body.append(row);
+    var act = async function (what) {
+      ok.disabled = no.disabled = true;
+      try {
+        await api('/device/' + what, { method: 'POST', headers: h, body: JSON.stringify({ user_code: code }) });
+        row.remove();
+        say(what === 'approve' ? 'Đã cho phép. Quay lại ứng dụng Auto_veo3, bạn sẽ được đăng nhập trong vài giây.' : 'Đã từ chối.', what === 'approve' ? 'good' : '');
+      } catch (e) {
+        ok.disabled = no.disabled = false;
+        say(e.message, 'err');
+        if (/máy/i.test(e.message)) body.append(el('a', { href: '/veo3/devices.html' }, 'Quản lý thiết bị'));
+      }
+    };
+    ok.onclick = function () { act('approve'); };
+    no.onclick = function () { act('deny'); };
+  } catch (e) {
+    say(e.message + ' (nếu vừa đăng nhập, hãy tải lại trang)', 'err');
+  }
+})();
+</script>
+</body>
+</html>

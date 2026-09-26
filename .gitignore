@@ -1,0 +1,12 @@
+.venv/
+build/
+dist/
+__pycache__/
+*.pyc
+.pytest_cache/
+client/vendor/
+data/
+.env
+*.pem
+secrets/
+tools/cloudflared/

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thiết bị Auto_veo3</title>
+<style>
+  body { margin:0; font:16px/1.55 "Segoe UI",system-ui,sans-serif; color:#1f2937; background:#f5f6f8; }
+  main { max-width:680px; margin:6vh auto; padding:0 20px; }
+  .card { background:#fff; border:1px solid #e5e7eb; border-radius:14px; padding:26px; }
+  h1 { margin:0 0 6px; font-size:24px; } .sub { color:#6b7280; margin:0 0 18px; }
+  table { width:100%; border-collapse:collapse; } th, td { text-align:left; padding:9px 8px; border-bottom:1px solid #eef0f3; font-size:14px; }
+  button { border:0; border-radius:6px; padding:6px 12px; background:#fde2e2; color:#dc2626; font-weight:600; cursor:pointer; }
+  .err { color:#b91c1c; }
+</style>
+</head>
+<body>
+<main><div class="card">
+  <h1>Thiết bị Auto_veo3</h1>
+  <p class="sub" id="plan">Đang tải…</p>
+  <div id="list"></div>
+</div></main>
+<script>
+var KEY = 'd100radar_token', token = localStorage.getItem(KEY);
+var h = { 'Authorization': 'Bearer ' + token };
+function el(t, props, text) { var e = Object.assign(document.createElement(t), props || {}); if (text) e.textContent = text; return e; }
+async function load() {
+  var list = document.getElementById('list'), plan = document.getElementById('plan');
+  list.textContent = '';
+  if (!token) { plan.textContent = 'Bạn cần đăng nhập D100Radar trước.'; list.append(el('a', { href: '/login' }, 'Đăng nhập')); return; }
+  var r = await fetch('/api/veo/devices', { headers: h });
+  if (!r.ok) { plan.textContent = 'Không tải được (đăng nhập lại nếu phiên đã hết hạn).'; plan.className = 'sub err'; return; }
+  var d = await r.json();
+  var actives = d.devices.filter(function (x) { return x.status === 'active'; });
+  plan.textContent = 'Gói ' + d.plan.name + ': ' + actives.length + '/' + d.plan.max_devices + ' máy' + (d.expires_at ? ', hết hạn ' + d.expires_at.slice(0, 10) : '');
+  var t = el('table');
+  var head = el('tr'); ['Tên máy', 'Lần cuối', ''].forEach(function (x) { head.append(el('th', {}, x)); }); t.append(head);
+  actives.forEach(function (x) {
+    var tr = el('tr'); tr.append(el('td', {}, x.name || '(không tên)'), el('td', {}, (x.last_seen || '').replace('T', ' ').slice(0, 16)));
+    var td = el('td'); var b = el('button', {}, 'Gỡ máy');
+    b.onclick = async function () {
+      if (!confirm('Gỡ máy này? Máy đó sẽ phải đăng nhập lại.')) return;
+      var rr = await fetch('/api/veo/devices/' + x.id, { method: 'DELETE', headers: h });
+      if (!rr.ok) alert('Chỉ chủ hoặc quản trị workspace mới gỡ được thiết bị.');
+      load();
+    };
+    td.append(b); tr.append(td); t.append(tr);
+  });
+  list.append(t);
+}
+load();
+</script>
+</body>
+</html>

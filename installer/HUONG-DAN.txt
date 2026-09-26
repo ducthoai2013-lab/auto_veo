@@ -1,0 +1,18 @@
+AUTO_VEO3 - HUONG DAN NHANH
+============================
+
+1. Giai nen toan bo thu muc nay vao noi ban muon (Desktop, D:\Tools...). Khong can quyen quan tri,
+   khong can cai Python hay ffmpeg.
+2. Mo Auto_veo3.exe.
+3. Bam "Dang nhap bang Google". Trinh duyet mo ra: dang nhap D100Radar (neu chua) roi bam
+   "Cho phep thiet bi nay". Quay lai app, vai giay sau app tu dang nhap.
+4. Dan prompt (moi dong mot prompt, nen dung tieng Anh), chon ty le, thu muc luu, bam
+   "BAT DAU TAO VIDEO". Ket qua tu tai ve thu muc da chon.
+5. Het luot/het han: bam "MUA GOI CUOC", quet ma QR bang app ngan hang. He thong tu kich hoat.
+
+LUU Y
+- Windows 10/11 64-bit, can Internet.
+- Neu Windows hien "Windows da bao ve PC cua ban": bam "Thong tin them" -> "Van chay".
+- Doi may: vao https://d100radar.com/veo3/devices.html de go may cu.
+- Du lieu (dang nhap, lich su) nam o %APPDATA%\Auto_veo3. Xoa thu muc app khong mat dang nhap.
+- Can ho tro: bam nut "Ho tro" trong app, sao chep thong tin gui quan tri.
